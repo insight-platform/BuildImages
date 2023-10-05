@@ -65,7 +65,7 @@ jobs:
         with:
           file: ${{ matrix.docker_file }}
           platforms: ${{ matrix.arch }}
-          tags: ${{matrix.tag}}:${{ GITHUB_REF_NAME }}
+          tags: ${{matrix.tag}}:${{ env.GITHUB_REF_NAME }}
           push: true
           context: .
           cache-from: type=gha
