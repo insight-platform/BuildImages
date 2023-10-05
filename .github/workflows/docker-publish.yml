@@ -29,12 +29,12 @@ jobs:
             name: manylinux-arm
             arch: linux/arm64
             tag: latest
-            label: manylinux_2_28_arm64
+            label: ghcr.io/insight-platform/manylinux_2_28_arm64
           - docker_file: docker/Dockerfile.manylinux_2_28_X64
             name: manylinux-x86
             arch: linux/amd64
             tag: latest
-            label: manylinux_2_28_x64
+            label: ghcr.io/insight-platform/manylinux_2_28_x64
 
     steps:
       - name: Checkout repository
