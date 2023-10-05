@@ -26,11 +26,11 @@ jobs:
           - docker_file: docker/Dockerfile.manylinux_2_28_ARM64
             name: manylinux-arm
             arch: linux/arm64
-            tag: "${{ env.REGISTRY }}/insight-platform/manylinux_2_28_arm64:${{ GITHUB_REF_NAME }}"
+            tag: ghcr.io/insight-platform/manylinux_2_28_arm64:${{ GITHUB_REF_NAME }}
           - docker_file: docker/Dockerfile.manylinux_2_28_X64
             name: manylinux-x86
             arch: linux/amd64
-            tag: "${{ env.REGISTRY }}/insight-platform/manylinux_2_28_x64:${{ GITHUB_REF_NAME }}"
+            tag: ghcr.io/insight-platform/manylinux_2_28_x64:${{ GITHUB_REF_NAME }}
 
     steps:
       - name: Checkout repository
