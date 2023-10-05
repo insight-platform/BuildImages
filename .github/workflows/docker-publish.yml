@@ -63,12 +63,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build docker image
+      - name: Build docker image for ${{ env.GITHUB_REF_SLUG }}
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           file: ${{ matrix.docker_file }}
           platforms: ${{ matrix.arch }}
-          tags: ${{matrix.tag}}:${{ GITHUB_REF_SLUG }}
+          tags: ${{matrix.tag}}:${{ env.GITHUB_REF_SLUG }}
           push: true
           context: .
           cache-from: type=gha
