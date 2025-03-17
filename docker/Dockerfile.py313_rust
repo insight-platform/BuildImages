@@ -1,0 +1,14 @@
+FROM python:3.13
+
+# Install dependencies needed for Rust
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    pkg-config \
+    curl \
+    git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt
+COPY docker/install-basic-deps-manylinux.sh .
+RUN bash /opt/install-basic-deps-manylinux.sh
