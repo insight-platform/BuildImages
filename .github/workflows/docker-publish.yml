@@ -33,6 +33,10 @@ jobs:
             tag: ghcr.io/insight-platform/manylinux_2_28_x64
           - docker_file: docker/Dockerfile.py313_rust
             name: py313_rust
+            arch: linux/arm64
+            tag: ghcr.io/insight-platform/py313_rust
+          - docker_file: docker/Dockerfile.py313_rust
+            name: py313_rust
             arch: linux/amd64
             tag: ghcr.io/insight-platform/py313_rust
 
