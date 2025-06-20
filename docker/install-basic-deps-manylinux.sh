@@ -2,6 +2,13 @@
 
 set -e
 
+dnf install -y epel-release
+# dnf config-manager --set-enabled crb
+dnf install -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
+dnf install -y --nogpgcheck https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm
+dnf install -y ffmpeg ffmpeg-devel clang clang-devel openssl-devel jq
+pip3 install maturin==1.8.7 patchelf cffi ziglang sccache>=0.4.0
+
 curl -o rustup.sh --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
 sh rustup.sh -y
 source $HOME/.cargo/env
