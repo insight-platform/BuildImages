@@ -9,4 +9,3 @@ WORKDIR /opt
 FROM base AS chef
 ENV PATH="/root/.cargo/bin:$PATH"
 RUN rustc -V
-
