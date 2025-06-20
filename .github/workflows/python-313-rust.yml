@@ -16,9 +16,7 @@ jobs:
 
   # Build job for py313_rust image
   build-py313-rust:
-    runs-on:
-      - self-hosted
-      - X64
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write

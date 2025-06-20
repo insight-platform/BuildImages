@@ -15,9 +15,7 @@ env:
 jobs:
   # Build job for manylinux_2_28 image
   build-manylinux:
-    runs-on:
-      - self-hosted
-      - X64
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write

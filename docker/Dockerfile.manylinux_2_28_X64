@@ -1,12 +1,12 @@
-FROM quay.io/pypa/manylinux_2_28_x86_64 AS base
+FROM quay.io/pypa/manylinux_2_28_x86_64 as base
+
+RUN --mount=type=bind,source=.,target=/opt/scripts bash /opt/scripts/install-basic-deps-manylinux.sh
+ENV PATH="/root/.cargo/bin:/opt/python/cp310-cp310/bin:/opt/python/cp312-cp312/bin:$PATH"
+RUN --mount=type=bind,source=.,target=/opt/scripts bash /opt/scripts/install-basic-deps.sh
 
 WORKDIR /opt
 
-RUN --mount=type=bind,source=./docker/install-basic-deps-manylinux.sh,target=/opt/install-basic-deps-manylinux.sh bash /opt/install-basic-deps-manylinux.sh
-ENV PATH="/root/.cargo/bin:/opt/python/cp310-cp310/bin:/opt/python/cp312-cp312/bin:$PATH"
-RUN --mount=type=bind,source=./docker/install-basic-deps.sh,target=/opt/install-basic-deps.sh bash /opt/install-basic-deps.sh
-
-FROM base AS chef
+FROM base as chef
 ENV PATH="/root/.cargo/bin:$PATH"
 RUN rustc -V
 
