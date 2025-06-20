@@ -8,4 +8,4 @@ RUN --mount=type=cache,target=/var/lib/apt/lists \
     curl \
     git
 
-RUN --mount=type=bind,source=.,target=/opt/scripts bash /opt/scripts/install-basic-deps.sh
+RUN --mount=type=bind,source=.,target=/opt/scripts bash /opt/scripts/docker/install-basic-deps.sh
