@@ -3,34 +3,6 @@
 set -e
 
 dnf install -y epel-release
-# dnf config-manager --set-enabled crb
 dnf install -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
 dnf install -y --nogpgcheck https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm
-dnf install -y ffmpeg ffmpeg-devel clang clang-devel openssl-devel jq
-pip3 install maturin==1.8.7 patchelf cffi ziglang sccache>=0.4.0
-
-curl -o rustup.sh --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
-sh rustup.sh -y
-source $HOME/.cargo/env
-rustup update
-rustc -V
-
-cargo install cargo-chef --locked
-
-ARCH=$(uname -m)
-
-PB_REL="https://github.com/protocolbuffers/protobuf/releases"
-
-# x86_64
-if [ "$ARCH" = "x86_64" ]; then
-  curl -LO $PB_REL/download/v3.15.8/protoc-3.15.8-linux-x86_64.zip
-elif [ "$ARCH" = "aarch64" ]; then
-  curl -LO $PB_REL/download/v3.15.8/protoc-3.15.8-linux-aarch_64.zip
-else
-    echo "Unsupported architecture $ARCH"
-    exit 1
-fi
-
-unzip *.zip
-cp bin/protoc /usr/bin
-chmod 755 /usr/bin/protoc
+RUN dnf install -y ffmpeg ffmpeg-devel clang clang-devel openssl-devel jq

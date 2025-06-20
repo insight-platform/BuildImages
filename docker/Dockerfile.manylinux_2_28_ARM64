@@ -1,10 +1,10 @@
 FROM quay.io/pypa/manylinux_2_28_aarch64 as base
 
 WORKDIR /opt
-COPY docker/install-basic-deps-manylinux.sh .
-RUN bash /opt/install-basic-deps-manylinux.sh
 
+RUN --mount=type=bind,source=docker/install-basic-deps-manylinux.sh,target=/opt/install-basic-deps-manylinux.sh bash /opt/install-basic-deps-manylinux.sh
 ENV PATH="/root/.cargo/bin:/opt/python/cp310-cp310/bin:/opt/python/cp312-cp312/bin:$PATH"
+RUN --mount=type=bind,source=docker/install-basic-deps.sh,target=/opt/install-basic-deps.sh bash /opt/install-basic-deps.sh
 
 FROM base as chef
 ENV PATH="/root/.cargo/bin:$PATH"
