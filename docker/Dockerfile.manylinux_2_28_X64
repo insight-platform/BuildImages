@@ -1,10 +1,10 @@
 FROM quay.io/pypa/manylinux_2_28_x86_64 as base
 
-ENV PATH="/root/.cargo/bin:/opt/python/cp310-cp310/bin:/opt/python/cp312-cp312/bin:$PATH"
-
 WORKDIR /opt
 COPY docker/install-basic-deps-manylinux.sh .
 RUN bash /opt/install-basic-deps-manylinux.sh
+
+ENV PATH="/root/.cargo/bin:/opt/python/cp310-cp310/bin:/opt/python/cp312-cp312/bin:$PATH"
 
 FROM base as chef
 ENV PATH="/root/.cargo/bin:$PATH"
