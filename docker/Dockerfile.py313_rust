@@ -10,4 +10,4 @@ RUN --mount=type=cache,target=/var/lib/apt/lists \
 
 WORKDIR /opt
 
-RUN --mount=type=bind,source=docker/install-basic-deps.sh,target=/opt/install-basic-deps.sh bash /opt/install-basic-deps.sh
+RUN --mount=type=bind,source=./docker/install-basic-deps.sh,target=/opt/install-basic-deps.sh bash /opt/install-basic-deps.sh
