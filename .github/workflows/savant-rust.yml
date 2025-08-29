@@ -101,7 +101,7 @@ jobs:
           retention-days: 1
 
 
-  # Merge job for py313_rust image
+  # Merge job for savant_rust image
   merge-savant-rust:
     runs-on: ubuntu-latest
     needs:
