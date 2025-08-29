@@ -5,7 +5,8 @@ RUN --mount=type=cache,target=/var/lib/apt/lists \
     build-essential \
     pkg-config \
     curl \
-    git
+    git \
+    unzip
 
 RUN --mount=type=bind,source=.,target=/opt/scripts bash /opt/scripts/docker/install-basic-deps.sh
 
