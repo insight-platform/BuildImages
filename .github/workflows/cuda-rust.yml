@@ -1,4 +1,4 @@
-name: Docker
+name: CUDA Rust
 
 on:
   push:
@@ -15,8 +15,9 @@ env:
 jobs:
 
   # Build job for py313_rust image
-  build-py313-rust:
-    runs-on: ubuntu-latest
+  build-cuda-rust:
+    runs-on:
+      group: ${{ matrix.group }}
     permissions:
       contents: read
       packages: write
@@ -24,9 +25,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
+        include:
+          - platform: linux/arm64
+            group: native-builders-arm
+          - platform: linux/amd64
+            group: native-builders-amd64
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -69,9 +72,9 @@ jobs:
         with:
           provenance: false
           sbom: false
-          file: docker/Dockerfile.py313_rust
+          file: docker/Dockerfile.cuda_rust
           platforms: ${{ matrix.platform }}
-          tags: ghcr.io/insight-platform/py313_rust
+          tags: ghcr.io/insight-platform/cuda_rust
           outputs: type=image,push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
           context: .
           cache-from: type=gha
@@ -79,24 +82,24 @@ jobs:
 
       - name: Export digest
         run: |
-          mkdir -p ${{ runner.temp }}/digests-py313rust
+          mkdir -p ${{ runner.temp }}/digests-cuda_rust
           digest="${{ steps.build.outputs.digest }}"
-          touch "${{ runner.temp }}/digests-py313rust/${digest#sha256:}"
+          touch "${{ runner.temp }}/digests-cuda_rust/${digest#sha256:}"
 
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digests-py313rust-${{ env.PLATFORM_PAIR }}
-          path: ${{ runner.temp }}/digests-py313rust/*
+          name: digests-cuda_rust-${{ env.PLATFORM_PAIR }}
+          path: ${{ runner.temp }}/digests-cuda_rust/*
           if-no-files-found: error
           retention-days: 1
 
 
   # Merge job for py313_rust image
-  merge-py313-rust:
+  merge-cuda-rust:
     runs-on: ubuntu-latest
     needs:
-      - build-py313-rust
+      - build-cuda-rust
     if: github.event_name != 'pull_request'
     permissions:
       contents: read
@@ -108,8 +111,8 @@ jobs:
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
-          path: ${{ runner.temp }}/digests-py313rust
-          pattern: digests-py313rust-*
+          path: ${{ runner.temp }}/digests-cuda_rust
+          pattern: digests-cuda_rust-*
           merge-multiple: true
 
       - name: Set up Docker Buildx
@@ -123,12 +126,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create manifest list and push
-        working-directory: ${{ runner.temp }}/digests-py313rust
+        working-directory: ${{ runner.temp }}/digests-cuda_rust
         run: |
           docker buildx imagetools create \
-            -t ghcr.io/insight-platform/py313_rust:${{ env.GITHUB_REF_SLUG }} \
-            $(printf 'ghcr.io/insight-platform/py313_rust@sha256:%s ' *)
+            -t ghcr.io/insight-platform/cuda_rust:${{ env.GITHUB_REF_SLUG }} \
+            $(printf 'ghcr.io/insight-platform/cuda_rust@sha256:%s ' *)
 
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ghcr.io/insight-platform/py313_rust:${{ env.GITHUB_REF_SLUG }}
+          docker buildx imagetools inspect ghcr.io/insight-platform/cuda_rust:${{ env.GITHUB_REF_SLUG }}
