@@ -131,13 +131,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set tag
+        run: |
+          TAG=${{ env.GITHUB_REF_SLUG }}
+          if [ "$TAG" = "main" ]; then
+            TAG="latest"
+          fi
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests-savant_rust
         run: |
           docker buildx imagetools create \
-            -t ghcr.io/insight-platform/savant_rust:${{ env.GITHUB_REF_SLUG }} \
+            -t ghcr.io/insight-platform/savant_rust:${env.TAG} \
             $(printf 'ghcr.io/insight-platform/savant_rust@sha256:%s ' *)
 
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ghcr.io/insight-platform/savant_rust:${{ env.GITHUB_REF_SLUG }}
+          docker buildx imagetools inspect ghcr.io/insight-platform/savant_rust:${{ env.TAG }}
