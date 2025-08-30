@@ -148,4 +148,5 @@ jobs:
 
       - name: Inspect image
         run: |
+          echo ${{ env.TAG }}
           docker buildx imagetools inspect ghcr.io/insight-platform/savant_rust:${{ env.TAG }}
