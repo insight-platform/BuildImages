@@ -143,10 +143,9 @@ jobs:
         working-directory: ${{ runner.temp }}/digests-savant_rust
         run: |
           docker buildx imagetools create \
-            -t ghcr.io/insight-platform/savant_rust:${env.TAG} \
+            -t ghcr.io/insight-platform/savant_rust:${{ env.TAG }} \
             $(printf 'ghcr.io/insight-platform/savant_rust@sha256:%s ' *)
 
       - name: Inspect image
         run: |
-          echo ${{ env.TAG }}
           docker buildx imagetools inspect ghcr.io/insight-platform/savant_rust:${{ env.TAG }}
