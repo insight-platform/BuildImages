@@ -2,7 +2,7 @@
 
 set -e
 
-pip3 install maturin~=1.9 patchelf cffi ziglang sccache>=0.4.0
+pip3 install --root-user-action maturin~=1.9 patchelf cffi ziglang sccache>=0.4.0
 
 curl -o rustup.sh --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
 sh rustup.sh -y
