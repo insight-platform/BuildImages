@@ -1,0 +1,13 @@
+FROM python:3.14
+
+# Install dependencies needed for Rust
+RUN --mount=type=cache,target=/var/lib/apt/lists \
+    apt-get update && apt-get install -y \
+    build-essential \
+    pkg-config \
+    curl \
+    git
+
+RUN --mount=type=bind,source=.,target=/opt/scripts bash /opt/scripts/docker/install-basic-deps.sh
+
+WORKDIR /opt
