@@ -1,0 +1,64 @@
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies needed for building Python and Rust
+RUN --mount=type=cache,target=/var/lib/apt/lists \
+    apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    pkg-config \
+    curl \
+    git \
+    wget \
+    ca-certificates \
+    gcc \
+    libbluetooth-dev \
+    libbz2-dev \
+    libc6-dev \
+    libdb-dev \
+    libexpat1-dev \
+    libffi-dev \
+    libgdbm-dev \
+    liblzma-dev \
+    libncursesw5-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    make \
+    tk-dev \
+    uuid-dev \
+    unzip \
+    xz-utils \
+    zlib1g-dev
+
+# Build Python 3.14 with free-threading (--disable-gil)
+# Note: Using latest available version - adjust PYTHON_VERSION as needed
+ENV PYTHON_VERSION=3.14.0
+WORKDIR /tmp
+RUN wget -q https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz && \
+    mkdir -p /usr/src/python && \
+    tar -xJC /usr/src/python --strip-components=1 -f Python-${PYTHON_VERSION}.tar.xz && \
+    rm Python-${PYTHON_VERSION}.tar.xz && \
+    cd /usr/src/python && \
+    ./configure --prefix=/usr/local \
+                --enable-shared \
+                --disable-gil \
+                --with-system-expat \
+                --with-ensurepip=install && \
+    make -j$(nproc) && \
+    make install && \
+    ldconfig && \
+    cd / && \
+    rm -rf /usr/src/python && \
+    ln -sf /usr/local/bin/python3.14t /usr/local/bin/python3 && \
+    ln -sf /usr/local/bin/python3.14t /usr/local/bin/python
+
+# Verify Python and libpython are available
+RUN python3.14t --version && \
+    python3.14t -c "import sys; print('GIL enabled:', sys._is_gil_enabled())" && \
+    ls -la /usr/local/lib/libpython3.14t* && \
+    python3.14t -c "import sysconfig; print('Lib dir:', sysconfig.get_config_var('LIBDIR'))"
+
+RUN --mount=type=bind,source=.,target=/opt/scripts bash /opt/scripts/docker/install-basic-deps.sh
+
+WORKDIR /opt
