@@ -1,14 +1,14 @@
-FROM debian:bookworm-slim
+# Stage 1: Build Python 3.14t
+FROM debian:bookworm-slim AS python-base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies needed for building Python and Rust
+# Install dependencies needed for building Python
 RUN --mount=type=cache,target=/var/lib/apt/lists \
     apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     pkg-config \
     curl \
-    git \
     wget \
     ca-certificates \
     gcc \
@@ -27,12 +27,10 @@ RUN --mount=type=cache,target=/var/lib/apt/lists \
     make \
     tk-dev \
     uuid-dev \
-    unzip \
     xz-utils \
     zlib1g-dev
 
 # Build Python 3.14 with free-threading (--disable-gil)
-# Note: Using latest available version - adjust PYTHON_VERSION as needed
 ENV PYTHON_VERSION=3.14.0
 WORKDIR /tmp
 RUN wget -q https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz && \
@@ -58,6 +56,21 @@ RUN python3.14t --version && \
     python3.14t -c "import sys; print('GIL enabled:', sys._is_gil_enabled())" && \
     ls -la /usr/local/lib/libpython3.14t* && \
     python3.14t -c "import sysconfig; print('Lib dir:', sysconfig.get_config_var('LIBDIR'))"
+
+WORKDIR /opt
+
+# Stage 2: py314t - Python-only image
+FROM python-base AS py314t
+# This stage is just the Python base, no additional changes needed
+
+# Stage 3: py314t_rust - Python + Rust image
+FROM python-base AS py314t_rust
+
+# Install additional dependencies needed for Rust
+RUN --mount=type=cache,target=/var/lib/apt/lists \
+    apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    unzip
 
 RUN --mount=type=bind,source=.,target=/opt/scripts bash /opt/scripts/docker/install-basic-deps.sh
 
